@@ -6,7 +6,8 @@
  * @tree: A pointer to the root of the tree.
  * @func: A pointer to a function to call.
  */
-void binary_tree_preorder(const binary_tree_t *tree, void (*func)(int))
+void binary_tree_preorder(const binary_tree_t *tree,
+		void (*func)(int))
 {
 	if (tree && func)
 	{
