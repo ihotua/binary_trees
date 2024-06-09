@@ -6,7 +6,7 @@
  *
  * Return: if full, 1 else 0. If NULL, return 0
  */
-`
+
 int binary_tree_is_full(const binary_tree_t *tree)
 {
 	if (tree == NULL)
