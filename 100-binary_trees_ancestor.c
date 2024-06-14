@@ -9,15 +9,14 @@
 binary_tree_t *binary_trees_ancestor(const binary_tree_t *first,
 		const binary_tree_t *second)
 {
-	binary_tree_t *mama, *dada;
+	binary_tree_t *mama, *papa;
 
 	if (!first || !second)
 		return (NULL);
 	if (first == second)
 		return ((binary_tree_t *)first);
 
-	mama = first->parent;
-	papa = second->parent;
+	mama = first->parent, papa = second->parent;
 	if (first == papa || !mama || (!mama->parent && papa))
 		return (binary_trees_ancestor(first, papa));
 	else if (mama == second || !papa || (!papa->parent && mama))
