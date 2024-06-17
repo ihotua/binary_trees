@@ -1,36 +1,52 @@
 #include "binary_trees.h"
+#include <stdlib.h>
 
 /**
- * binary_tree_height - Measures the height of a binary tree
- * @tree: A pointer to the root node of the tree
- *
- * Return: The height of the tree. If tree is NULL, return 0.
+ * struct link_s - singly linked list
+ * @n: depth of current node
+ * @node: pointer to a binary tree node
+ * @next: pointer to the next node
+ */
+typedef struct link_s
+{
+	size_t n;
+	const binary_tree_t *node;
+	struct link_s *next;
+} link_t;
+
+/**
+ * binary_tree_height - Function that measures the height of a binary tree
+ * @tree: tree to go through
+ * Return: the height
  */
 size_t binary_tree_height(const binary_tree_t *tree)
 {
-	if (!tree)
+	size_t l = 0;
+	size_t r = 0;
+
+	if (tree == NULL)
+	{
 		return (0);
-	size_t l = tree->left ? 1 +
-		binary_tree_height(tree->left) : 0;
-	size_t r = tree->right ? 1 +
-		binary_tree_height(tree->right) : 0;
+	}
+
+	l = tree->left ? 1 + binary_tree_height(tree->left) : 0;
+	r = tree->right ? 1 + binary_tree_height(tree->right) : 0;
+
 	return ((l > r) ? l : r);
 }
 
 /**
- * binary_tree_depth - Measures the depth of a node
- * @tree: A pointer to the node to measure the depth.
- *
- * Return: The depth of the node. If tree is NULL, return 0.
+ * binary_tree_depth - depth of specified node from root
+ * @tree: node to check the depth
+ * Return: 0 is it is the root or number of depth
  */
 size_t binary_tree_depth(const binary_tree_t *tree)
 {
-	return ((tree && tree->parent) ? 1 +
-			binary_tree_depth(tree->parent) : 0);
+	return ((tree && tree->parent) ? 1 + binary_tree_depth(tree->parent) : 0);
 }
 
 /**
- * linked_node - this function makes a linked list
+ * linked_node - this function makes a linked list from depth level and node
  * @head: pointer to head of linked list
  * @tree: node to store
  * @level: depth of node to store
@@ -47,9 +63,10 @@ void linked_node(link_t **head, const binary_tree_t *tree, size_t level)
 	}
 	new_node->n = level;
 	new_node->node = tree;
+	new_node->next = NULL;
+
 	if (*head == NULL)
 	{
-		new_node->next = NULL;
 		*head = new_node;
 	}
 	else
@@ -59,7 +76,6 @@ void linked_node(link_t **head, const binary_tree_t *tree, size_t level)
 		{
 			other = other->next;
 		}
-		new_node->next = NULL;
 		other->next = new_node;
 	}
 }
@@ -99,29 +115,29 @@ void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 	{
 		return;
 	}
-	else
+
+	height = binary_tree_height(tree);
+	head = NULL;
+	recursion(&head, tree);
+
+	while (count <= height)
 	{
-		height = binary_tree_height(tree);
-		head = NULL;
-		recursion(&head, tree);
-		while (count <= height)
+		other = head;
+		while (other != NULL)
 		{
-			other = head;
-			while (other != NULL)
+			if (count == other->n)
 			{
-				if (count == other->n)
-				{
-					func(other->node->n);
-				}
-				other = other->next;
+				func(other->node->n);
 			}
-			count++;
+			other = other->next;
 		}
-		while (head != NULL)
-		{
-			other = head;
-			head = head->next;
-			free(other);
-		}
+		count++;
+	}
+
+	while (head != NULL)
+	{
+		other = head;
+		head = head->next;
+		free(other);
 	}
 }
