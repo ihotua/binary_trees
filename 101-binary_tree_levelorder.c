@@ -1,18 +1,4 @@
 #include "binary_trees.h"
-#include <stdlib.h>
-
-/**
- * struct link_s - singly linked list
- * @n: depth of current node
- * @node: pointer to a binary tree node
- * @next: pointer to the next node
- */
-typedef struct link_s
-{
-	size_t n;
-	const binary_tree_t *node;
-	struct link_s *next;
-} link_t;
 
 /**
  * binary_tree_height - Function that measures the height of a binary tree
