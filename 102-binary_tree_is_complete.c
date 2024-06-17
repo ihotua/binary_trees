@@ -1,34 +1,132 @@
 #include "binary_trees.h"
 
 /**
- * binary_tree_rotate_right - Rotates right the binary tree.
- * @tree: A pointer to the root node of the tree to rotate.
- *
- * Return: A pointer to the new root node after rotation.
+ * QueueNode - Structure for a node in the queue
  */
-binary_tree_t *binary_tree_rotate_right(binary_tree_t *tree)
+typedef struct QueueNode {
+    binary_tree_t *node; // Pointer to the binary tree node
+    struct QueueNode *next; // Pointer to the next node in the queue
+} QueueNode;
+
+/**
+ * Queue - Structure representing a queue
+ */
+typedef struct Queue {
+    QueueNode *front; // Pointer to the front of the queue
+    QueueNode *rear; // Pointer to the rear of the queue
+} Queue;
+
+/**
+ * create_queue_node - Creates a new node for the queue
+ * @node: Pointer to the binary tree node
+ * Return: Pointer to the new node, or NULL on failure
+ */
+QueueNode *create_queue_node(binary_tree_t *node)
 {
-	binary_tree_t *mike;
+    QueueNode *new_node = malloc(sizeof(QueueNode));
+    if (new_node == NULL)
+        return NULL;
+    new_node->node = node;
+    new_node->next = NULL;
+    return new_node;
+}
 
-	if (tree == NULL || tree->left == NULL)
-		return (NULL);
+/**
+ * free_queue - Frees a queue
+ * @queue: Pointer to the front of the queue
+ */
+void free_queue(QueueNode *queue)
+{
+    while (queue != NULL)
+    {
+        QueueNode *temp = queue;
+        queue = queue->next;
+        free(temp);
+    }
+}
 
-	mike = tree->left;
-	tree->left = mike->right;
-	if (mike->right != NULL)
-		mike->right->parent = tree;
+/**
+ * enqueue - Adds a node to the rear of the queue
+ * @queue: Pointer to the front of the queue
+ * @node: Pointer to the binary tree node to enqueue
+ * Return: Pointer to the rear of the queue
+ */
+QueueNode *enqueue(QueueNode **queue, binary_tree_t *node)
+{
+    QueueNode *new_node = create_queue_node(node);
+    if (new_node == NULL)
+        return NULL;
+    if (*queue == NULL)
+    {
+        *queue = new_node;
+    }
+    else
+    {
+        (*queue)->next = new_node;
+    }
+    return new_node;
+}
 
-	mike->right = tree;
-	mike->parent = tree->parent;
-	tree->parent = mike;
+/**
+ * dequeue - Removes the front node from the queue
+ * @queue: Pointer to the front of the queue
+ */
+void dequeue(QueueNode **queue)
+{
+    if (*queue == NULL)
+        return;
+    QueueNode *temp = *queue;
+    *queue = (*queue)->next;
+    free(temp);
+}
 
-	if (mike->parent != NULL)
-	{
-		if (mike->parent->left == tree)
-			mike->parent->left = mike;
-		else
-			mike->parent->right = mike;
-	}
+/**
+ * binary_tree_is_complete - Checks if a binary tree is complete
+ * @tree: Pointer to the root node of the tree
+ * Return: 1 if complete, 0 otherwise
+ */
+int binary_tree_is_complete(const binary_tree_t *tree)
+{
+    if (tree == NULL)
+        return 0;
 
-	return (mike);
+    QueueNode *front = NULL, *rear = NULL;
+    int flag = 0;
+
+    enqueue(&front, (binary_tree_t *)tree);
+
+    while (front != NULL)
+    {
+        binary_tree_t *current = front->node;
+        dequeue(&front);
+
+        if (current->left)
+        {
+            if (flag)
+            {
+                free_queue(front);
+                return 0;
+            }
+            rear = enqueue(&rear, current->left);
+        }
+        else
+        {
+            flag = 1;
+        }
+
+        if (current->right)
+        {
+            if (flag)
+            {
+                free_queue(front);
+                return 0;
+            }
+            rear = enqueue(&rear, current->right);
+        }
+        else
+        {
+            flag = 1;
+        }
+    }
+    return 1;
 }
