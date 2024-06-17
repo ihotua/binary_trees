@@ -4,17 +4,9 @@
  * QueueNode - Structure for a node in the queue
  */
 typedef struct QueueNode {
-    binary_tree_t *node; // Pointer to the binary tree node
-    struct QueueNode *next; // Pointer to the next node in the queue
+    binary_tree_t *node; /* Pointer to the binary tree node */
+    struct QueueNode *next; /* Pointer to the next node in the queue */
 } QueueNode;
-
-/**
- * Queue - Structure representing a queue
- */
-typedef struct Queue {
-    QueueNode *front; // Pointer to the front of the queue
-    QueueNode *rear; // Pointer to the rear of the queue
-} Queue;
 
 /**
  * create_queue_node - Creates a new node for the queue
@@ -56,13 +48,19 @@ QueueNode *enqueue(QueueNode **queue, binary_tree_t *node)
     QueueNode *new_node = create_queue_node(node);
     if (new_node == NULL)
         return NULL;
+
     if (*queue == NULL)
     {
         *queue = new_node;
     }
     else
     {
-        (*queue)->next = new_node;
+        QueueNode *temp = *queue;
+        while (temp->next != NULL)
+        {
+            temp = temp->next;
+        }
+        temp->next = new_node;
     }
     return new_node;
 }
@@ -73,11 +71,13 @@ QueueNode *enqueue(QueueNode **queue, binary_tree_t *node)
  */
 void dequeue(QueueNode **queue)
 {
+    QueueNode *temp_node;
     if (*queue == NULL)
         return;
-    QueueNode *temp = *queue;
+
+    temp_node = *queue;
     *queue = (*queue)->next;
-    free(temp);
+    free(temp_node);
 }
 
 /**
@@ -87,13 +87,17 @@ void dequeue(QueueNode **queue)
  */
 int binary_tree_is_complete(const binary_tree_t *tree)
 {
+    QueueNode *front, *rear;
+    int flag;
+
     if (tree == NULL)
         return 0;
 
-    QueueNode *front = NULL, *rear = NULL;
-    int flag = 0;
+    front = rear = create_queue_node((binary_tree_t *)tree);
+    if (front == NULL)
+        exit(1);
 
-    enqueue(&front, (binary_tree_t *)tree);
+    flag = 0;
 
     while (front != NULL)
     {
@@ -107,7 +111,7 @@ int binary_tree_is_complete(const binary_tree_t *tree)
                 free_queue(front);
                 return 0;
             }
-            rear = enqueue(&rear, current->left);
+            rear = enqueue(&front, current->left);
         }
         else
         {
@@ -121,7 +125,7 @@ int binary_tree_is_complete(const binary_tree_t *tree)
                 free_queue(front);
                 return 0;
             }
-            rear = enqueue(&rear, current->right);
+            rear = enqueue(&front, current->right);
         }
         else
         {
@@ -129,4 +133,5 @@ int binary_tree_is_complete(const binary_tree_t *tree)
         }
     }
     return 1;
+}
 }
