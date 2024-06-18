@@ -1,9 +1,12 @@
 #include "binary_trees.h"
 
 /**
- * QueueNode - Structure for a node in the queue
+ * struct QueueNode - Structure for a node in the queue
+ * @node: Pointer to the binary tree node
+ * @next: Pointer to the next node in the queue
  */
-typedef struct QueueNode {
+typedef struct QueueNode
+{
     binary_tree_t *node; /* Pointer to the binary tree node */
     struct QueueNode *next; /* Pointer to the next node in the queue */
 } QueueNode;
@@ -17,10 +20,10 @@ QueueNode *create_queue_node(binary_tree_t *node)
 {
     QueueNode *new_node = malloc(sizeof(QueueNode));
     if (new_node == NULL)
-        return NULL;
+        return (NULL);
     new_node->node = node;
     new_node->next = NULL;
-    return new_node;
+    return (new_node);
 }
 
 /**
@@ -29,11 +32,13 @@ QueueNode *create_queue_node(binary_tree_t *node)
  */
 void free_queue(QueueNode *queue)
 {
+    QueueNode *temp_node;
+
     while (queue != NULL)
     {
-        QueueNode *temp = queue;
+        temp_node = queue;
         queue = queue->next;
-        free(temp);
+        free(temp_node);
     }
 }
 
@@ -46,8 +51,10 @@ void free_queue(QueueNode *queue)
 QueueNode *enqueue(QueueNode **queue, binary_tree_t *node)
 {
     QueueNode *new_node = create_queue_node(node);
+    QueueNode *temp;
+
     if (new_node == NULL)
-        return NULL;
+        return (NULL);
 
     if (*queue == NULL)
     {
@@ -55,14 +62,14 @@ QueueNode *enqueue(QueueNode **queue, binary_tree_t *node)
     }
     else
     {
-        QueueNode *temp = *queue;
+        temp = *queue;
         while (temp->next != NULL)
         {
             temp = temp->next;
         }
         temp->next = new_node;
     }
-    return new_node;
+    return (new_node);
 }
 
 /**
@@ -72,6 +79,7 @@ QueueNode *enqueue(QueueNode **queue, binary_tree_t *node)
 void dequeue(QueueNode **queue)
 {
     QueueNode *temp_node;
+
     if (*queue == NULL)
         return;
 
@@ -88,10 +96,11 @@ void dequeue(QueueNode **queue)
 int binary_tree_is_complete(const binary_tree_t *tree)
 {
     QueueNode *front, *rear;
+    binary_tree_t *current;
     int flag;
 
     if (tree == NULL)
-        return 0;
+        return (0);
 
     front = rear = create_queue_node((binary_tree_t *)tree);
     if (front == NULL)
@@ -101,15 +110,15 @@ int binary_tree_is_complete(const binary_tree_t *tree)
 
     while (front != NULL)
     {
-        binary_tree_t *current = front->node;
+        current = front->node;
         dequeue(&front);
 
-        if (current->left)
+        if (current->left != NULL)
         {
-            if (flag)
+            if (flag == 1)
             {
                 free_queue(front);
-                return 0;
+                return (0);
             }
             rear = enqueue(&front, current->left);
         }
@@ -118,12 +127,12 @@ int binary_tree_is_complete(const binary_tree_t *tree)
             flag = 1;
         }
 
-        if (current->right)
+        if (current->right != NULL)
         {
-            if (flag)
+            if (flag == 1)
             {
                 free_queue(front);
-                return 0;
+                return (0);
             }
             rear = enqueue(&front, current->right);
         }
@@ -132,6 +141,6 @@ int binary_tree_is_complete(const binary_tree_t *tree)
             flag = 1;
         }
     }
-    return 1;
+    return (1);
 }
 }
