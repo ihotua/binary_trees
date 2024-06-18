@@ -23,36 +23,36 @@ queue_node_t *create_queue_node(binary_tree_t *tree_node)
 
 /**
  * free_queue - Frees a queue_node_t queue.
- * @front: A pointer to the front of the queue.
+ * @queue: A pointer to the front of the queue.
  */
-void free_queue(queue_node_t *front)
+void free_queue(queue_node_t *queue)
 {
     queue_node_t *temp;
 
-    while (front != NULL)
+    while (queue != NULL)
     {
-        temp = front->next;
-        free(front);
-        front = temp;
+        temp = queue->next;
+        free(queue);
+        queue = temp;
     }
 }
 
 /**
  * enqueue - Adds a node to the end of a queue_node_t queue.
  * @tree_node: The binary tree node to add.
- * @front: A pointer to the front of the queue.
+ * @queue: A pointer to the front of the queue.
  * @rear: A double pointer to the rear of the queue.
  *
  * Description: Upon malloc failure, exits with a status code of 1.
  */
-void enqueue(binary_tree_t *tree_node, queue_node_t *front, queue_node_t **rear)
+void enqueue(binary_tree_t *tree_node, queue_node_t *queue, queue_node_t **rear)
 {
     queue_node_t *new_node;
 
     new_node = create_queue_node(tree_node);
     if (new_node == NULL)
     {
-        free_queue(front);
+        free_queue(queue);
         exit(1);
     }
     (*rear)->next = new_node;
@@ -61,15 +61,15 @@ void enqueue(binary_tree_t *tree_node, queue_node_t *front, queue_node_t **rear)
 
 /**
  * dequeue - Removes the front node from a queue_node_t queue.
- * @front: A double pointer to the front of the queue.
+ * @queue: A double pointer to the front of the queue.
  */
-void dequeue(queue_node_t **front)
+void dequeue(queue_node_t **queue)
 {
     queue_node_t *temp;
 
-    temp = (*front)->next;
-    free(*front);
-    *front = temp;
+    temp = (*queue)->next;
+    free(*queue);
+    *queue = temp;
 }
 
 /**

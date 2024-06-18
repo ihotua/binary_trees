@@ -55,9 +55,9 @@ typedef struct queue_node_s
 /* Function prototypes */
 
 queue_node_t *create_queue_node(binary_tree_t *tree_node);
-void free_queue(queue_node_t *front);
-void enqueue(binary_tree_t *tree_node, queue_node_t *front, queue_node_t **rear);
-void dequeue(queue_node_t **front);
+void free_queue(queue_node_t *queue);
+void enqueue(binary_tree_t *tree_node, queue_node_t *queue, queue_node_t **rear);
+void dequeue(queue_node_t **queue);
 int binary_tree_is_complete(const binary_tree_t *tree);
 
 /* Printing helper function */
