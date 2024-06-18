@@ -1,17 +1,5 @@
 #include "binary_trees.h"
 
-typedef struct queue_node
-{
-    binary_tree_t *tree_node;
-    struct queue_node *next;
-} queue_node_t;
-
-queue_node_t *create_queue_node(binary_tree_t *tree_node);
-void free_queue(queue_node_t *front);
-void enqueue(binary_tree_t *tree_node, queue_node_t *front, queue_node_t **rear);
-void dequeue(queue_node_t **front);
-int binary_tree_is_complete(const binary_tree_t *tree);
-
 /**
  * create_queue_node - Creates a new queue_node_t node.
  * @tree_node: The binary tree node for the new node to contain.
