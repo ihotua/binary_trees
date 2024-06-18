@@ -46,6 +46,18 @@ typedef struct link_s
 	struct link_s *next;
 } link_t;
 
+typedef struct QueueNode
+{
+	binary_tree_t *node; /* Pointer to the binary tree node */
+	struct QueueNode *next; /* Pointer to the next node in the queue */
+} QueueNode;
+
+QueueNode *create_queue_node(binary_tree_t *node);
+void free_queue(QueueNode *queue);
+QueueNode *enqueue(QueueNode **queue, binary_tree_t *node);
+void dequeue(QueueNode **queue);
+int binary_tree_is_complete(const binary_tree_t *tree);
+
 /* Printing helper function */
 void binary_tree_print(const binary_tree_t *);
 
