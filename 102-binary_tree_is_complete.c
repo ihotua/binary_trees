@@ -1,123 +1,113 @@
 #include "binary_trees.h"
-
 /**
- * create_queue_node - Creates a new queue_node_t node.
- * @tree_node: The binary tree node for the new node to contain.
- *
- * Return: If an error occurs, NULL. Else, a pointer to the new node */
-queue_node_t *create_queue_node(binary_tree_t *tree_node)
-{
-	queue_node_t *new_node;
-
-	new_node = malloc(sizeof(queue_node_t));
-	if (new_node == NULL)
-		return (NULL);
-
-	new_node->tree_node = tree_node;
-	new_node->next = NULL;
-
-	return (new_node);
-}
-
-/**
- * free_queue - Frees a queue_node_t queue.
- * @queue: A pointer to the front of the queue.
+ * new_node - This function creates a new_node in a linked_list
+ * @node: Type pointer of node to be created.
+ * Return: the node created
  */
-void free_queue(queue_node_t *queue)
+link_t *new_node(binary_tree_t *node)
 {
-	queue_node_t *temp;
+	link_t *fresh_node;
 
-	while (queue != NULL)
+	fresh_node =  malloc(sizeof(link_t));
+	if (fresh_node == NULL)
 	{
-		temp = queue->next;
-		free(queue);
-		queue = temp;
+		return (NULL);
+	}
+	fresh_node->node = node;
+	fresh_node->next = NULL;
+
+	return (fresh_node);
+}
+/**
+ * free_q - This is a function that frees the nodes
+ * @head: Node of the linked_list
+ */
+void free_q(link_t *head)
+{
+	link_t *part_node;
+
+	while (head)
+	{
+		part_node = head->next;
+		free(head);
+		head = part_node;
 	}
 }
-
 /**
- * enqueue - Adds a node to the end of a queue_node_t queue.
- * @tree_node: The binary tree node to add.
- * @queue: A pointer to the front of the queue.
- * @rear: A double pointer to the rear of the queue.
- *
+ * _push - A function that pushes a node into the stack
+ * @node: Type pointer of node of the tree
+ * @head: Type head node of in the stack
+ * @tail: Type tail node of in the stack
  */
-void enqueue(binary_tree_t *tree_node, queue_node_t *queue, queue_node_t **rear)
+void _push(binary_tree_t *node, link_t *head, link_t **tail)
 {
-	queue_node_t *new_node;
+	link_t *fresh_node;
 
-	new_node = create_queue_node(tree_node);
-	if (new_node == NULL)
+	fresh_node = new_node(node);
+	if (fresh_node == NULL)
 	{
-		free_queue(queue);
+		free_q(head);
 		exit(1);
 	}
-	(*rear)->next = new_node;
-	*rear = new_node;
+	(*tail)->next = fresh_node;
+	*tail = fresh_node;
 }
-
 /**
- * dequeue - Removes the front node from a queue_node_t queue.
- * @queue: A double pointer to the front of the queue.
+ * _pop - Function that pops a node into the stack
+ * @head: Type head node of in the stack
  */
-void dequeue(queue_node_t **queue)
+void _pop(link_t **head)
 {
-	queue_node_t *temp;
+	link_t *part_node;
 
-	temp = (*queue)->next;
-	free(*queue);
-	*queue = temp;
+	part_node = (*head)->next;
+	free(*head);
+	*head = part_node;
 }
-
 /**
- * binary_tree_is_complete - Checks if a binary tree is complete.
- * @tree: A pointer to the root node of the tree to traverse.
- *
- * Return: If the tree is NULL or not complete, 0. Else, 0
+ * binary_tree_is_complete - Checks if a binary tree is complete
+ * @tree: Type pointer of node of the tree
+ * Return: 1 if is complete 0 if it is not
  */
 int binary_tree_is_complete(const binary_tree_t *tree)
 {
-	queue_node_t *front, *rear;
-	unsigned char end_flag = 0;
+	link_t *head, *tail;
+	int flag = 0;
 
 	if (tree == NULL)
-		return (0);
-
-	front = rear = create_queue_node((binary_tree_t *)tree);
-	if (front == NULL)
-		exit(1);
-
-	while (front != NULL)
 	{
-		if (front->tree_node->left != NULL)
+		return (0);
+	}
+	head = tail = new_node((binary_tree_t *)tree);
+	if (head == NULL)
+	{
+		exit(1);
+	}
+	while (head != NULL)
+	{
+		if (head->node->left != NULL)
 		{
-			if (end_flag == 1)
+			if (flag == 1)
 			{
-				free_queue(front);
+				free_q(head);
 				return (0);
 			}
-			enqueue(front->tree_node->left, front, &rear);
+			_push(head->node->left, head, &tail);
 		}
 		else
+			flag = 1;
+		if (head->node->right != NULL)
 		{
-			end_flag = 1;
-		}
-
-		if (front->tree_node->right != NULL)
-		{
-			if (end_flag == 1)
+			if (flag == 1)
 			{
-				free_queue(front);
+				free_q(head);
 				return (0);
 			}
-			enqueue(front->tree_node->right, front, &rear);
+			_push(head->node->right, head, &tail);
 		}
 		else
-		{
-			end_flag = 1;
-		}
-
-		dequeue(&front);
+			flag = 1;
+		_pop(&head);
 	}
 	return (1);
 }
