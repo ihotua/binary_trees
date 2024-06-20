@@ -41,7 +41,7 @@ bst_t *bst_insert(bst_t **tree, int value)
 			fresh = binary_tree_node(temp, value);
 			if (fresh == NULL)
 				return (NULL);
-			return (temp->right = fresh)
+			return (temp->right = fresh);
 		}
 	}
 	return (NULL);
