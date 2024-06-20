@@ -14,7 +14,7 @@ binary_tree_t *binary_tree_rotate_left(binary_tree_t *tree)
 		return (tree);
 	
 	fresh_root = tree->right;
-	part = new_root->left;
+	part = fresh_root->left;
 
 	fresh_root->left = tree;
 	tree->right = part;
