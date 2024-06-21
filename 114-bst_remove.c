@@ -39,7 +39,7 @@ bst_t *bst_remove(bst_t *root, int value)
 		if (root->left == NULL)
 		{
 			bst_t *right_child = root->right;
-			
+
 			if (right_child != NULL)
 				right_child->parent = root->parent;
 			free(root);
